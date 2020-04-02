@@ -196,7 +196,7 @@ interface Names {
     [y: number]: string // 数字索引可以和字符串混用，数字索引返回的类型一定要是字符串索引类型的子类型，原因是JavaScript会进行类型转换把number转换成string，number不能转成string就报错了
 }
 
-// 范型
+// 泛型
 interface ResponseData<T = any> {
     code: number,
     content: string,
@@ -427,7 +427,211 @@ class Auto {
     // private state2 = 0 // 接口也会抽离私有成员变量
 }
 interface AutoInteface extends Auto {}
-class C implements AutoInteface {
+class Auto1 implements AutoInteface {
     state = 1
 }
 class Bus extends Auto implements AutoInteface {}
+
+// 泛型二
+// 可是使用函数重载来实现泛型
+// 可以使用联合类型使用泛型
+
+function log<T>(value: T): T {
+    console.log(value)
+    return value;
+}
+// 断言使用泛型
+log<string[]>(['a', 'b'])
+// 类型推断使用泛型 推荐
+log(['a', 'b'])
+
+// 泛型函数定义
+type Log = <T>(value: T) => T
+// 泛型函数实现
+let myLog: Log = log
+
+// 接口使用范型
+interface Log1 {
+    <T>(value: T): T
+}
+interface Log2<T = string> {
+    (value: T): T
+}
+let myLog2: Log2<number> = log
+
+
+interface Log3<T> {
+    data: T
+}
+class Log33 implements Log3<Log> {
+    data: Log = log
+}
+// 泛型类的约束作用
+class Log4<T> {
+    run(value: T) {
+        console.log(value)
+    }
+}
+let log4 = new Log4<number>()
+log4.run(4)
+let log5 = new Log4<string>()
+log5.run('你好')
+
+let log6 = new Log4()
+log6.run(1)
+log6.run('hello')
+
+interface Length {
+    length: number
+}
+function log7<T extends Length>(value: T) {
+    console.log(value, value.length)
+}
+log7([1, 3, 4])
+log7('hello')
+log({ length: 9 })
+
+// 类型检查机制
+// 类型推断
+let a = 1 // a类型推断为number
+let b = 'hello' // b类型推断为string
+let c = [] // c类型推断为Array
+let d = [1, null] // 推断为number和null联合类型
+let e = (x = 1) => x + 1 // 从右向左推断函数
+
+// 上下文类型推断，从左到右推断
+document.addEventListener('click', (event) => {
+    console.log(event.target)
+})
+
+// 类型断言二
+interface Foo {
+    bar: number
+}
+let foo = {} as Foo // 可能会滥用，bar可能不会赋值
+foo.bar = 1
+let foo1: Foo = {
+    bar: 2
+}
+// 类型兼容性
+// x兼容y： x = y
+let s: string = 'a'
+// s = null // 需要开启空值检查strictNullChecks
+interface X {
+    a: any
+    b: any
+}
+interface Y {
+    a: any
+    b: any
+    c: any
+}
+// 类型兼容遵循鸭式变形法
+let x1: X = {a: 1, b: 2}
+let y1: Y = {a: 1, b: 2, c: 3}
+x1 = y1 // x1兼容y1
+// y1 = x1 // y1不兼容x1
+// 函数兼容性
+type Handler = (a: number, b: number) => void
+function hof(Handler: Handler) {
+    return Handler
+}
+hof(() => {})
+hof((a: number) => {})
+hof((a: number, b: number) => {})
+// hof((a: number, b: number, c: number) => {}) // 参数个数要求
+let func1 = (a: number, b: number, c: number) => {}
+hof(<Handler>func1 as Handler)
+hof(func1 as Handler)
+// hof((a: string) => {}) // 参数类型要求
+
+interface Point3D {
+    x: number;
+    y: number;
+    z: number;
+}
+interface Point2D {
+    x: number;
+    y: number;
+}
+let point3d = (point: Point3D) => {};
+let point2d = (point: Point2D) => {};
+// point2d = point3d // 关闭strictFunctionTypes才可以赋值，这种情况叫做函数的参数协变
+point3d = point2d
+// 返回值类型
+let f = () => ({ name: 'Lily' })
+let g = () => ({ name: 'Lily', location: 'Shenzhen' })
+// g = f // g的返回值类型比f的返回值类型多
+f = g
+
+function overload(a: number, b: number): number
+function overload(a: string, b: string): string
+function overload(a: any, b: any): any {}
+// function overload(a: any, b: any, c: any): any {} 函数重载实现参数多余定义，不兼容
+// function overload(a: any, b: any): void {} // 函数重载返回值不一样，不兼容
+
+// 枚举兼容性,枚举和number之间相互兼容
+enum Fruit { Apple, Banana }
+enum Color { Red, Yellow }
+let fruit: Fruit.Apple = 3
+let no: number = Fruit.Apple
+// let color: Color.Red = Fruit.Apple // 枚举和枚举之间不兼容
+// 类兼容性
+class A {
+    constructor(p: number, q: number) {
+    }
+    id: number = 1
+}
+class B {
+    static s = 1
+    constructor(p: number) {}
+    id: number =2
+}
+let aa = new A(1, 2)
+let bb = new B(1)
+aa == bb
+bb == aa
+
+class C {
+    constructor(p: number, q: number) {
+    }
+    id: number = 1
+    private name: string = ''
+}
+class D {
+    static s = 1
+    constructor(p: number) {}
+    id: number =2
+    private name: string = ''
+}
+let cc = new C(1, 2)
+let dd = new D(1)
+// cc == dd 私有成员会进行比较，但是子类和父类的私有变量是兼容的
+// dd == cc
+// 范型兼容
+interface Empty<T> {}
+let obj1: Empty<number> = {}
+let obj2: Empty<string> = {}
+obj1 = obj2
+obj2 = obj1
+let log8 = <T>(x: T): T => {
+    console.log(x)
+    return x
+}
+let log9 = <Z>(y: Z): Z => {
+    console.log(y)
+    return y
+}
+log8 = log9
+log9 = log8
+
+// 类型保护
+
+// 高级类型
+// 交叉类型 联合类型
+
+// 索引类型
+
+// 映射类型
+
+// 条件类型
