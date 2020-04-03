@@ -626,12 +626,174 @@ log8 = log9
 log9 = log8
 
 // 类型保护
+enum Type { Strong, Week }
+class Java {
+    helloJava() {
+        console.log('Hello Java')
+    }
+}
+class JavaScript {
+    helloJavaScript() {
+        console.log('Hello JavaScript')
+    }
+}
+function getLanguage(type: Type, x: string | number) {
+    let lang = type === Type.Strong ? new Java() : new JavaScript()
+    if((lang as Java).helloJava) {
+        (lang as Java).helloJava()
+    } else {
+        (lang as JavaScript).helloJavaScript()
+    }
+    // 类型断言 instanceof
+    if (lang instanceof Java) {
+        lang.helloJava()
+    } else {
+        lang.helloJavaScript()
+    }
+    // 类型断言 in
+    // if ('java' in lang) {
+    //     lang.helloJava()
+    // } else {
+    //     lang.helloJavaScript()
+    // }
+
+    // typeof 基本类型
+    if(typeof x === 'string') {
+        x.length
+    } else {
+        x.toFixed(2)
+    }
+    if (isJava(lang)) {
+        lang.helloJava()
+    } else {
+        lang.helloJavaScript()
+    }
+    return lang
+}
+// 类型谓词
+function isJava(lang: Java | JavaScript): lang is Java {
+    return (lang as Java).helloJava !== undefined
+}
+getLanguage(Type.Strong, 1)
+
 
 // 高级类型
-// 交叉类型 联合类型
-
+// 交叉类型取的是并集
+interface DogInterface {
+    run(): void
+}
+interface CatInterface {
+    jump(): void
+}
+let pet: DogInterface & CatInterface
+class Dog1 implements DogInterface {
+    run() {}
+    jump() {}
+    eat() {}
+}
+class Cat1 implements CatInterface {
+    jump() {}
+    eat() {}
+}
+// 联合类型
+let aaa: number | string = 'aa'
+let bbb: 'a' | 'b' | 'C'
+let ccc: 1 | 2 | 3
+enum Master { Boy, Girl }
+function getPet(master: Master) {
+    let pet = master === Master.Boy ? new Dog1() : new Cat1()
+    pet.eat()
+    // pet.run()
+    return pet
+}
+interface Square {
+    kind: 'square',
+    size: number
+}
+interface Rectangle {
+    kind: 'rectangle',
+    width: number,
+    height: number
+}
+interface Circle {
+    kind: 'circle',
+    r: number
+}
+type Shape = Square | Rectangle | Circle
+function area(s: Shape) {
+    switch (s.kind) {
+        case 'square':
+            return s.size * s.size
+        case 'rectangle':
+            return s.width * s.height
+        case 'circle':
+            return Math.PI * s.r ** 2
+        default:
+            return ((e: never) => { throw new Error(e)})(s) // 还有一种方法指定返回值为number
+    }
+}
+console.log(area({ kind: 'circle', r: 3}))
 // 索引类型
+let obj3 = {
+    a: 1,
+    b: 2,
+    c: 3
+}
+function getValues(obj: any, keys: string[]) {
+    return keys.map(key => obj[key])
+}
+console.log(getValues(obj3, ['a', 'b']))
+console.log(getValues(obj3, ['a', 'f']))
+// keyof T
+interface Obj {
+    a: number
+    b: string
+}
+let key: keyof Obj
+// T[K]
+let value: Obj['a']
+// T extends U
+function getValues2<T, K extends keyof T>(obj: T, keys: K[]): T[K][] {
+    return keys.map(key => obj[key])
+}
+console.log(getValues2(obj3, ['a', 'b']))
+// console.log(getValues2(obj3, ['e', 'f']))
 
 // 映射类型
+interface Obj1 {
+    a: string,
+    b: number;
+    c: boolean;
+}
+// 同态
+type ReadonlyObj = Readonly<Obj1> // 只读
+type PartialObj = Partial<Obj1> // 
+type PickObj = Pick<Obj1, 'a' | 'b'> // 抽取
+// 非同态
+type RecordObj = Record<'x' | 'y', Obj1>
 
 // 条件类型
+// T extends U ? X : Y
+type TypeName<T> = 
+    T extends string ? 'string' :
+    T extends number ? 'number' :
+    T extends boolean ? 'boolean' :
+    T extends undefined ? 'undefined' :
+    T extends Function ? 'function' :
+    'object'
+
+type T1 = TypeName<string>
+type T2 = TypeName<string[]>
+type T3 = TypeName<() => {}>
+
+// (A | B) extends U ? X : Y
+// (A extends U ? X : Y) | (B extends U ? X : Y)
+type T4 = TypeName<string | string[]>
+
+// 类型过滤
+type Diff<T, U> = T extends U ? never : T
+type T5 = Diff<'a' | 'b' | 'c', 'a' | 'e'> // Diff<'a', 'b', 'e'> | Diff<'b', 'a', | 'e'> | Diff<'c', 'a' | 'e'>
+type NotNull<T> = Diff<T, undefined | null>
+type T6 = NotNull<string | number | undefined | null> // 官方已经实现Exclude<T, U>、 NonNullable<T>、Extract<T, U>等
+type T7 = Extract<'a' | 'b' | 'c' | 'd' | 1 | true,  string | number>
+type T8 = ReturnType<() => string>
