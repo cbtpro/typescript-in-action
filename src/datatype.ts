@@ -77,7 +77,7 @@ enum Month {
     August,
     September,
     October,
-    Novemeber,
+    November,
     December
 }
 enum Role {
@@ -343,14 +343,14 @@ class SimpleClass {
 }
 
 // 抽象类
-abstract class Canoidea {
+abstract class Pet {
     eat() {
         console.log('eat')
     }
     abstract sleep(): void
 }
-// let canoidea = new Canoidea() //抽象类不能被实例化
-class Dog extends Canoidea {
+// let pet = new Pet() //抽象类不能被实例化
+class Dog extends Pet {
     constructor(public name: string) {
         super()
         this.name = name
@@ -364,15 +364,15 @@ let dog = new Dog('wang')
 dog.eat()
 dog.sleep()
 // 抽象类可以实现多态
-class Cat extends Canoidea {
+class Cat extends Pet {
     sleep() {
         console.log('cat sleep')
     }
 }
 let cat = new Cat()
-let canoideas: Canoidea[] = [ dog, cat ]
-canoideas.forEach(i => {
-    i.sleep()
+let pets: Pet[] = [ dog, cat ]
+pets.forEach(pet => {
+    pet.sleep()
 })
 
 // 链式调用
@@ -426,11 +426,11 @@ class Auto {
     state = 1
     // private state2 = 0 // 接口也会抽离私有成员变量
 }
-interface AutoInteface extends Auto {}
-class Auto1 implements AutoInteface {
+interface AutoInterface extends Auto {}
+class Auto1 implements AutoInterface {
     state = 1
 }
-class Bus extends Auto implements AutoInteface {}
+class Bus extends Auto implements AutoInterface {}
 
 // 泛型二
 // 可是使用函数重载来实现泛型
@@ -573,7 +573,7 @@ function overload(a: any, b: any): any {}
 // 枚举兼容性,枚举和number之间相互兼容
 enum Fruit { Apple, Banana }
 enum Color { Red, Yellow }
-let fruit: Fruit.Apple = 3
+let fruit: Fruit = Fruit.Apple;
 let no: number = Fruit.Apple
 // let color: Color.Red = Fruit.Apple // 枚举和枚举之间不兼容
 // 类兼容性
