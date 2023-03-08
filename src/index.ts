@@ -135,3 +135,83 @@ student.eat();
  * 重写函数时override可以省略
  */
 
+/** 
+ * 鸭子定律
+ * 鸭子定律是逻辑理论。比如定律1说的是事物的外在特征就是事物本质的表现。
+ * If it looks like a duck, walks like a duck, and quacks like a duck, it's a duck.
+ * 如果它看起来像鸭子，走起来像鸭子，叫起来像鸭子，它就是鸭子
+ */
+interface Vector2D {
+  x: number;
+  y: number;
+}
+interface NamedVector {
+  name: string;
+  x: number;
+  y: number;
+}
+function calculateLength(vector: Vector2D) {
+  const { x, y } = vector; 
+  return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+}
+const vector: NamedVector = {
+  name: 'entry',
+  x: 10,
+  y: 10,
+}
+
+console.log(calculateLength(vector));
+
+/**
+ * 虽然NamedVector和Vector2D不是同一个类型，多了name，但是也包含了x、y
+ * 没有明确过它俩的关系，但是ts来时允许calculateLength传入NamedVector类型
+ * 这说明ts也遵循鸭子规则
+ */
+
+/**
+ * 所以这里要特别注意下面这种情况
+ */
+interface Vector3D {
+  x: number;
+  y: number;
+  z: number;
+}
+function normalize1(vector: Vector3D) {
+  const length = calculateLength(vector);
+  const { x, y, z } = vector;
+  return {
+    x: x / length,
+    y: y / length,
+    z: z / length,
+  }
+}
+
+/**
+ * 执行的结果并不正确，而ts也没有识别出来，这就是鸭子定律带来的坏处
+ * 正确的做法是依然要去实现一个三维向量的归一化函数
+ */
+normalize({ x: 3, y: 4, z: 5}); // ==> { x: 0.6, y: 0.8, z: 1}
+
+function normalize(vector: Vector3D): number;
+function normalize(vector: Vector3D) {
+  const { x, y, z } = vector;
+  return Math.abs(x) + Math.abs(y) + Math.abs(z);
+}
+
+/**
+ * 严格限制any类型的使用
+ * 如果不是从js迁移到ts，在项目一开始就使用ts时，一定要严格显示any类型的使用
+ * 这对于ts项目是有很大的好处的
+ */
+let age: number;
+// age = '12'; // 不能将类型“string”分配给类型“number”。ts(2322)
+age = '12' as any; // 这种写法虽然很诱人，但是使用any消除了ts的很多优点
+
+/**
+ * any没有类型安全
+ * any类型没有ide的类型提示和自动补全
+ * any会掩盖重构代码时的错误，造成重构困难
+ * any遮蔽了你的类型设计
+ * any会让类型检查器和ts语言服务（tsserver）变成哑巴，损坏开发体验，破坏开发者对ts的信息
+ * 所以尽量避免使用any
+ */
