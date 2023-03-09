@@ -1,6 +1,6 @@
-import './datatype'
-let hello: string = "Hello Typescript! " + BASE_URL
-document.querySelectorAll('.app')[0].innerHTML = hello
+import './datatype';
+let hello: string = 'Hello Typescript! ' + BASE_URL;
+document.querySelectorAll('.app')[0].innerHTML = hello;
 
 /** typescript类型检查的3种方法 */
 
@@ -88,9 +88,9 @@ function add(a: number | string, b: number | string) {
 }
 
 console.log('add(1, 2) = ', add(1, 2));
-console.log('add(\'hello\', \'world\') = ', add('hello', 'world'));
-console.log('add(\'age\', \'18\') = ', add('age', 18));
-console.log('add(2023, \'年\') = ', add(2023, '年'));
+console.log("add('hello', 'world') = ", add('hello', 'world'));
+console.log("add('age', '18') = ", add('age', 18));
+console.log("add(2023, '年') = ", add(2023, '年'));
 
 type customArray = (string | number | boolean)[];
 function len(s: string): number;
@@ -98,7 +98,7 @@ function len(arr: customArray): number;
 function len<T extends customArray>(x: T) {
   return x.length;
 }
-console.log('len(\'hello world\')', len('hello world'));
+console.log("len('hello world')", len('hello world'));
 console.log('len([1, 2, 3])', len([1, 2, 3, 'hello world', true]));
 
 /** class继承中的函数重载 */
@@ -135,7 +135,7 @@ student.eat();
  * 重写函数时override可以省略
  */
 
-/** 
+/**
  * 鸭子定律
  * 鸭子定律是逻辑理论。比如定律1说的是事物的外在特征就是事物本质的表现。
  * If it looks like a duck, walks like a duck, and quacks like a duck, it's a duck.
@@ -151,14 +151,14 @@ interface NamedVector {
   y: number;
 }
 function calculateLength(vector: Vector2D) {
-  const { x, y } = vector; 
+  const { x, y } = vector;
   return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
 }
 const vector: NamedVector = {
   name: 'entry',
   x: 10,
   y: 10,
-}
+};
 
 console.log(calculateLength(vector));
 
@@ -183,14 +183,14 @@ function normalize1(vector: Vector3D) {
     x: x / length,
     y: y / length,
     z: z / length,
-  }
+  };
 }
 
 /**
  * 执行的结果并不正确，而ts也没有识别出来，这就是鸭子定律带来的坏处
  * 正确的做法是依然要去实现一个三维向量的归一化函数
  */
-normalize({ x: 3, y: 4, z: 5}); // ==> { x: 0.6, y: 0.8, z: 1}
+normalize({ x: 3, y: 4, z: 5 }); // ==> { x: 0.6, y: 0.8, z: 1}
 
 function normalize(vector: Vector3D): number;
 function normalize(vector: Vector3D) {
@@ -214,4 +214,107 @@ age = '12' as any; // 这种写法虽然很诱人，但是使用any消除了ts�
  * any遮蔽了你的类型设计
  * any会让类型检查器和ts语言服务（tsserver）变成哑巴，损坏开发体验，破坏开发者对ts的信息
  * 所以尽量避免使用any
+ */
+
+/**
+ * 实现一个debounce
+ */
+
+/**
+ * 去抖动
+ * @param action 需要去抖动的函数
+ * @param idle 抖动间隔时间，默认300ms
+ * @param immediate 是否立即执行，默认false
+ * @param thisArg 可选参数。当执行回调函数 action 时，用作 this 的值。
+ * @returns 包装后的去抖动函数
+ */
+function debounce(
+  action: Function,
+  idle = 300,
+  immediate = false,
+  thisArg: unknown = null
+) {
+  let last: number | undefined;
+  return (...rest: unknown[]) => {
+    if (last) {
+      window.clearTimeout(last);
+    }
+    if (immediate) {
+      if (!last) {
+        action.apply(thisArg, rest);
+      }
+      last = window.setTimeout(() => {
+        last = undefined;
+      }, idle);
+    } else {
+      last = window.setTimeout(() => {
+        action.apply(thisArg, rest);
+      }, idle);
+    }
+  };
+}
+
+const testDebounce = () => {
+  const timeFn = (clickTime: string) => {
+    console.log(`当前第${clickTime}执行，当前时间：`, new Date());
+  };
+  const debounceTimeFn = debounce(timeFn, 1000, true);
+  window.setTimeout(debounceTimeFn, 100, '模拟100ms第一次点击');
+  window.setTimeout(debounceTimeFn, 200, '模拟200ms第二次点击');
+  window.setTimeout(debounceTimeFn, 300, '模拟300ms第三次点击');
+  window.setTimeout(debounceTimeFn, 700, '模拟700ms第四次点击');
+  window.setTimeout(debounceTimeFn, 2000, '模拟2000ms第五次点击');
+  window.setTimeout(debounceTimeFn, 4000, '模拟4000ms第六次点击');
+};
+testDebounce();
+
+/**
+ * 实现一个throttle
+ */
+
+function throttle(
+  action: Function,
+  idle = 300,
+  immediate = true,
+  thisArg: unknown,
+) {
+  let lastTime: number | undefined = Date.now();
+  if (immediate) {
+    return (...rest: unknown[]) => {
+      const now = Date.now();
+      if (now - (lastTime as number) > idle) {
+        action.apply(thisArg, rest);
+        lastTime = now;
+      }
+    };
+  } else {
+    return (...rest: unknown[]) => {
+      if (!lastTime) {
+        action.apply(thisArg, rest);
+        lastTime = window.setTimeout(() => {
+          if (lastTime) {
+            window.clearTimeout(lastTime);
+          }
+          lastTime = undefined;
+        }, idle);
+      }
+    };
+  }
+}
+
+const testThrottle = () => {
+  const timeFn = () => {
+    console.log('当前时间：', new Date());
+  }
+  const throttleTimeFn = throttle(timeFn, 1000, true, this);
+  const timeFnTask = window.setInterval(throttleTimeFn, 10, true);
+  window.setTimeout(() => {
+    window.clearInterval(timeFnTask);
+  }, 1000 * 60);
+};
+testThrottle();
+
+/**
+ * 当然也可以使用优秀的开源ts的截流和去抖动 https://www.npmjs.com/search?q=debounce%20typescript
+ * 包括并且还有装饰器模式的去抖动和截流可以选用
  */
