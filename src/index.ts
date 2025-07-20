@@ -234,6 +234,11 @@ function debounce(
   immediate = false,
   thisArg: unknown = null
 ) {
+  /**
+   * node环境中写法是： let timeoutId: NodeJS.Timeout;
+   * 浏览器中写法是：let last: number | undefined;
+   * 兼容写法是：let last: ReturnType<typeof setTimeout>
+   */
   let last: number | undefined;
   return (...rest: unknown[]) => {
     if (last) {

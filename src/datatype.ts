@@ -6,7 +6,7 @@ let username: string = 'peter'
 
 // 数组
 let arr: number[] = [1, 2, 3]
-let arr1: Array<number>= [1, 2, 3]
+let arr1: Array<number> = [1, 2, 3]
 let arr2: Array<number | string> = [1, 2, 3, 'abc']
 
 // 元组
@@ -19,7 +19,7 @@ let lat = tuple1[1]
 // 函数
 let add = (x: number, y: number) => x + y
 let add1 = (x: number, y: number): number => x + y
-let compute: (x: number, y:number) => number
+let compute: (x: number, y: number) => number
 compute = (a, b) => a + b
 
 // 函数重载
@@ -34,7 +34,7 @@ func(1, 2)
 func('a', 'b')
 
 // 对象
-let obj: {x : number, y: number} = {x: 1, y: 3}
+let obj: { x: number, y: number } = { x: 1, y: 3 }
 obj.x = 3
 
 // symbol
@@ -47,7 +47,7 @@ let undefined1: undefined = undefined
 let nul: null = null
 
 // void
-let noReturn = () => {}
+let noReturn = () => { }
 
 // any
 let x
@@ -58,12 +58,12 @@ let error = () => {
     throw 'error'
 }
 let it = () => {
-    while(true) {}
+    while (true) { }
 }
 
 // 枚举
 enum Sex {
-    girl  = 0,
+    girl = 0,
     boy = 1
 }
 enum Month {
@@ -138,7 +138,7 @@ function render(result: Result) {
 let result = {
     data: [
         { id: 1, name: 'A', sex: 'male' },
-        {id: 2, name: 'B' }
+        { id: 2, name: 'B' }
     ]
 }
 // 鸭式变形法
@@ -149,14 +149,14 @@ render(result)
 render({
     data: [
         { id: 1, name: 'A', sex: 'male' },
-        {id: 2, name: 'B' }
+        { id: 2, name: 'B' }
     ]
 } as Result)
 // 方法3 类型断言 前置断言，此方法在react等jsx语法中不适用
 render(<Result>{
     data: [
         { id: 1, name: 'A', sex: 'male' },
-        {id: 2, name: 'B' }
+        { id: 2, name: 'B' }
     ]
 })
 // 方法4 使用字段签名
@@ -171,7 +171,7 @@ interface Result1 {
 function render1(result: Result1) {
     result.data.forEach(value => {
         console.log(value.id, value.name)
-        if(value.age) {
+        if (value.age) {
             console.log(value.age)
         }
         if (value.sex) {
@@ -183,14 +183,14 @@ function render1(result: Result1) {
 render1({
     data: [
         { id: 1, name: 'A', sex: 'male', age: 18 },
-        {id: 2, name: 'B' }
+        { id: 2, name: 'B' }
     ]
 })
 // 可索引类型有字符串索引和数字索引类型
 interface StringArray {
     [index: number]: string // 用任意的数字去索引都会得到一个string
 }
-let chars: StringArray = ['A','B']
+let chars: StringArray = ['A', 'B']
 interface Names {
     [x: string]: string, // 字符串索引
     [y: number]: string // 数字索引可以和字符串混用，数字索引返回的类型一定要是字符串索引类型的子类型，原因是JavaScript会进行类型转换把number转换成string，number不能转成string就报错了
@@ -226,7 +226,7 @@ let response1: ResponseData = {
 let responseBody: ResponseBody<List>
 
 // let定义函数类型
-let add2: (x:number, y: number) => number
+let add2: (x: number, y: number) => number
 // 接口定义函数类型
 interface Add {
     (x: number, y: number): number
@@ -242,15 +242,15 @@ interface Lib {
     sayHello(): void
 }
 // 暴露在全局中，是单例的
-let lib: Lib = (() => {}) as Lib
+let lib: Lib = (() => { }) as Lib
 lib.version = '1.0.0'
-lib.sayHello = () => {}
+lib.sayHello = () => { }
 
 // 干净且可以创建多例
 function getLib() {
-    let lib: Lib = (() => {}) as Lib
+    let lib: Lib = (() => { }) as Lib
     lib.version = '1.0.0'
-    lib.sayHello = () => {}
+    lib.sayHello = () => { }
     return lib
 }
 
@@ -262,7 +262,7 @@ let lib2 = getLib()
 
 // 可选参数
 function add4(x: number, y?: number) {
-    return y? x + y : x
+    return y ? x + y : x
 }
 // 默认值
 function add5(x: number, y = 0, z = 1) {
@@ -297,19 +297,19 @@ class Animal {
     readonly name: string // 只读属性不能被更改，一定要被初始化
     sex: number = 0
     color?: string
-    eat() {}
-    sleep() {}
-    protected pro() {}
+    eat() { }
+    sleep() { }
+    protected pro() { }
 }
 class Human extends Animal {
-    constructor (name: string, nation: string) {
+    constructor(name: string, nation: string) {
         super(name)
         this.nation = nation
     }
     public name: string = 'Human'
     nation: string
     static readonly role: Role = Role.Normal
-    say() {}
+    say() { }
     private pri() {
         this.pro() // protected可以被本身和子类调用
     }
@@ -333,7 +333,7 @@ class Useless {
 
 // 只能被继承，不能被实例化的类
 class BaseClass {
-    protected constructor() {}
+    protected constructor() { }
 }
 // 构造函数的参数也可以添加修饰符，可以省略类中的定义,代码更简洁
 class SimpleClass {
@@ -355,7 +355,7 @@ class Dog extends Pet {
         super()
         this.name = name
     }
-    run() {}
+    run() { }
     sleep() {
         console.log('dog zzZ!')
     }
@@ -370,7 +370,7 @@ class Cat extends Pet {
     }
 }
 let cat = new Cat()
-let pets: Pet[] = [ dog, cat ]
+let pets: Pet[] = [dog, cat]
 pets.forEach(pet => {
     pet.sleep()
 })
@@ -404,8 +404,8 @@ class Asian implements Human1 {
     constructor(public name: string) {
         this.name = name
     }
-    eat() {}
-    sleep() {}
+    eat() { }
+    sleep() { }
 }
 interface Man extends Human1 {
     run(): void
@@ -414,23 +414,23 @@ interface Child {
     cry(): void
 }
 // 接口可以继承接口、继承多个接口
-interface Boy extends Man, Child {}
+interface Boy extends Man, Child { }
 let boy: Boy = {
     name: '',
-    run() {},
-    eat() {},
-    cry() {}
+    run() { },
+    eat() { },
+    cry() { }
 }
 // 接口可以继承类，等于把类抽象成了接口
 class Auto {
     state = 1
     // private state2 = 0 // 接口也会抽离私有成员变量
 }
-interface AutoInterface extends Auto {}
+interface AutoInterface extends Auto { }
 class Auto1 implements AutoInterface {
     state = 1
 }
-class Bus extends Auto implements AutoInterface {}
+class Bus extends Auto implements AutoInterface { }
 
 // 泛型二
 // 可是使用函数重载来实现泛型
@@ -527,8 +527,8 @@ interface Y {
     c: any
 }
 // 类型兼容遵循鸭式变形法
-let x1: X = {a: 1, b: 2}
-let y1: Y = {a: 1, b: 2, c: 3}
+let x1: X = { a: 1, b: 2 }
+let y1: Y = { a: 1, b: 2, c: 3 }
 x1 = y1 // x1兼容y1
 // y1 = x1 // y1不兼容x1
 // 函数兼容性
@@ -536,11 +536,11 @@ type Handler = (a: number, b: number) => void
 function hof(Handler: Handler) {
     return Handler
 }
-hof(() => {})
-hof((a: number) => {})
-hof((a: number, b: number) => {})
+hof(() => { })
+hof((a: number) => { })
+hof((a: number, b: number) => { })
 // hof((a: number, b: number, c: number) => {}) // 参数个数要求
-let func1 = (a: number, b: number, c: number) => {}
+let func1 = (a: number, b: number, c: number) => { }
 hof(<Handler>func1 as Handler)
 hof(func1 as Handler)
 // hof((a: string) => {}) // 参数类型要求
@@ -554,8 +554,8 @@ interface Point2D {
     x: number;
     y: number;
 }
-let point3d = (point: Point3D) => {};
-let point2d = (point: Point2D) => {};
+let point3d = (point: Point3D) => { };
+let point2d = (point: Point2D) => { };
 // point2d = point3d // 关闭strictFunctionTypes才可以赋值，这种情况叫做函数的参数协变
 point3d = point2d
 // 返回值类型
@@ -566,7 +566,7 @@ f = g
 
 function overload(a: number, b: number): number
 function overload(a: string, b: string): string
-function overload(a: any, b: any): any {}
+function overload(a: any, b: any): any { }
 // function overload(a: any, b: any, c: any): any {} 函数重载实现参数多余定义，不兼容
 // function overload(a: any, b: any): void {} // 函数重载返回值不一样，不兼容
 
@@ -584,8 +584,8 @@ class A {
 }
 class B {
     static s = 1
-    constructor(p: number) {}
-    id: number =2
+    constructor(p: number) { }
+    id: number = 2
 }
 let aa = new A(1, 2)
 let bb = new B(1)
@@ -600,8 +600,8 @@ class C {
 }
 class D {
     static s = 1
-    constructor(p: number) {}
-    id: number =2
+    constructor(p: number) { }
+    id: number = 2
     private name: string = ''
 }
 let cc = new C(1, 2)
@@ -609,7 +609,7 @@ let dd = new D(1)
 // cc == dd 私有成员会进行比较，但是子类和父类的私有变量是兼容的
 // dd == cc
 // 范型兼容
-interface Empty<T> {}
+interface Empty<T> { }
 let obj1: Empty<number> = {}
 let obj2: Empty<string> = {}
 obj1 = obj2
@@ -639,7 +639,7 @@ class JavaScript {
 }
 function getLanguage(type: Type, x: string | number) {
     let lang = type === Type.Strong ? new Java() : new JavaScript()
-    if((lang as Java).helloJava) {
+    if ((lang as Java).helloJava) {
         (lang as Java).helloJava()
     } else {
         (lang as JavaScript).helloJavaScript()
@@ -658,7 +658,7 @@ function getLanguage(type: Type, x: string | number) {
     // }
 
     // typeof 基本类型
-    if(typeof x === 'string') {
+    if (typeof x === 'string') {
         x.length
     } else {
         x.toFixed(2)
@@ -687,13 +687,13 @@ interface CatInterface {
 }
 let pet: DogInterface & CatInterface
 class Dog1 implements DogInterface {
-    run() {}
-    jump() {}
-    eat() {}
+    run() { }
+    jump() { }
+    eat() { }
 }
 class Cat1 implements CatInterface {
-    jump() {}
-    eat() {}
+    jump() { }
+    eat() { }
 }
 // 联合类型
 let aaa: number | string = 'aa'
@@ -729,10 +729,10 @@ function area(s: Shape) {
         case 'circle':
             return Math.PI * s.r ** 2
         default:
-            return ((e: never) => { throw new Error(e)})(s) // 还有一种方法指定返回值为number
+            return ((e: never) => { throw new Error(e) })(s) // 还有一种方法指定返回值为number
     }
 }
-console.log(area({ kind: 'circle', r: 3}))
+console.log(area({ kind: 'circle', r: 3 }))
 // 索引类型
 let obj3 = {
     a: 1,
@@ -774,7 +774,7 @@ type RecordObj = Record<'x' | 'y', Obj1>
 
 // 条件类型
 // T extends U ? X : Y
-type TypeName<T> = 
+type TypeName<T> =
     T extends string ? 'string' :
     T extends number ? 'number' :
     T extends boolean ? 'boolean' :
@@ -795,5 +795,108 @@ type Diff<T, U> = T extends U ? never : T
 type T5 = Diff<'a' | 'b' | 'c', 'a' | 'e'> // Diff<'a', 'b', 'e'> | Diff<'b', 'a', | 'e'> | Diff<'c', 'a' | 'e'>
 type NotNull<T> = Diff<T, undefined | null>
 type T6 = NotNull<string | number | undefined | null> // 官方已经实现Exclude<T, U>、 NonNullable<T>、Extract<T, U>等
-type T7 = Extract<'a' | 'b' | 'c' | 'd' | 1 | true,  string | number>
+type T7 = Extract<'a' | 'b' | 'c' | 'd' | 1 | true, string | number>
 type T8 = ReturnType<() => string>
+
+/**
+ * 模板字面量类型（Template Literal Types）
+ * @see https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/ms/index.d.ts
+ */
+type Unit =
+    | "Years"
+    | "Year"
+    | "Yrs"
+    | "Yr"
+    | "Y"
+    | "Weeks"
+    | "Week"
+    | "W"
+    | "Days"
+    | "Day"
+    | "D"
+    | "Hours"
+    | "Hour"
+    | "Hrs"
+    | "Hr"
+    | "H"
+    | "Minutes"
+    | "Minute"
+    | "Mins"
+    | "Min"
+    | "M"
+    | "Seconds"
+    | "Second"
+    | "Secs"
+    | "Sec"
+    | "s"
+    | "Milliseconds"
+    | "Millisecond"
+    | "Msecs"
+    | "Msec"
+    | "Ms";
+
+type UnitAnyCase = Unit | Uppercase<Unit> | Lowercase<Unit>;
+
+type StringValue =
+    | `${number}`
+    | `${number}${UnitAnyCase}`
+    | `${number} ${UnitAnyCase}`;
+
+const expire: StringValue = '11111';
+
+// 优化
+// 基础单位（小写单数）
+type BaseUnit =
+  | 'year'
+  | 'week'
+  | 'day'
+  | 'hour'
+  | 'minute'
+  | 'second'
+  | 'millisecond';
+
+// 单复数形式映射（简单加 's'）
+type Pluralize<U extends string> = U | `${U}s`;
+
+// 生成大小写变体集合
+type CaseVariants<S extends string> =
+  | S
+  | Capitalize<S>
+  | Uppercase<S>
+  | Lowercase<S>;
+
+// 生成所有单位变体（单数复数 + 大小写）
+type Unit1 = CaseVariants<Pluralize<BaseUnit>>;
+
+// 字符串时间格式，允许数字后接单位，中间允许空格，也允许纯数字
+type StringValue1 =
+  | `${number}`
+  | `${number}${Unit1}`
+  | `${number} ${Unit1}`;
+
+const expiredIn: StringValue1 = '11day';
+
+// 递归条件类型（Recursive Conditional Types） 构造数字联合类型：从 1 到 N
+type BuildRange<
+  N extends number,
+  Result extends number[] = [],
+> = Result['length'] extends N
+  ? Result[number]
+  : BuildRange<N, [...Result, Result['length']]>
+
+// 剔除 0 得到 1 ~ N - 1
+type RangeFrom1To<N extends number> = Exclude<BuildRange<N>, 0>
+// 生成 1 ~ N
+// type RangeFrom1To<N extends number> = Exclude<BuildRange<N>, 0> | N
+
+// 生成如 "1p" | "2p" | ... 的字符串字面量类型
+type PUnit<N extends number> = `${RangeFrom1To<N>}p`
+
+// 数组类型（元素为 "Np" 类型）
+type PUnitArray<N extends number> = PUnit<N>[]
+
+// ✅ 示例：允许 "1p" 到 "99p"
+type MyPArray = PUnitArray<99>
+
+const valid: MyPArray = ['1p', '23p', '98p'] // ✅ 正确
+// const invalid: MyPArray = ['0p', '99p'] // ❌ 报错，超出范围
